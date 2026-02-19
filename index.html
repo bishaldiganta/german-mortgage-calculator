@@ -1,578 +1,629 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Multi-Scenario German Mortgage Calculator</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body {
-      font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        Helvetica, Arial, sans-serif;
-      background-color: #f0f2f5;
-      color: #333;
-      padding: 15px;
-      margin: 0;
-    }
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .header h1 {
-      color: #0056b3;
-      margin-bottom: 5px;
-    }
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Multi-Scenario German Mortgage Calculator</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style>
+            body {
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                    Helvetica, Arial, sans-serif;
+                background-color: #f0f2f5;
+                color: #333;
+                padding: 15px;
+                margin: 0;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .header h1 {
+                color: #0056b3;
+                margin-bottom: 5px;
+            }
 
-    .scenarios-wrapper {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-    .scenario-col {
-      flex: 1;
-      min-width: 320px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border-top: 5px solid #0056b3;
-    }
-    .scenario-col#scenario-B {
-      border-top-color: #28a745;
-    }
+            .scenarios-wrapper {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            .scenario-col {
+                flex: 1;
+                min-width: 320px;
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                border-top: 5px solid #0056b3;
+            }
+            .scenario-col#scenario-B {
+                border-top-color: #28a745;
+            }
 
-    h2 {
-      font-size: 1.4em;
-      border-bottom: 2px solid #e1e4e8;
-      padding-bottom: 5px;
-      margin-top: 0;
-      color: #333;
-    }
-    h3 {
-      font-size: 1.1em;
-      color: #555;
-      margin-bottom: 10px;
-    }
+            h2 {
+                font-size: 1.4em;
+                border-bottom: 2px solid #e1e4e8;
+                padding-bottom: 5px;
+                margin-top: 0;
+                color: #333;
+            }
+            h3 {
+                font-size: 1.1em;
+                color: #555;
+                margin-bottom: 10px;
+            }
 
-    .loan-section {
-      border: 1px solid #e1e4e8;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      background-color: #fafbfc;
-    }
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 10px;
-      align-items: flex-end;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      min-width: 110px;
-    }
+            .loan-section {
+                border: 1px solid #e1e4e8;
+                padding: 12px;
+                margin-bottom: 15px;
+                border-radius: 6px;
+                background-color: #fafbfc;
+            }
+            .row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 10px;
+                align-items: flex-end;
+            }
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                min-width: 110px;
+            }
 
-    label {
-      font-weight: bold;
-      margin-bottom: 4px;
-      font-size: 0.8em;
-      color: #444;
-    }
-    input,
-    select {
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.95em;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .readonly-input {
-      background-color: #e9ecef;
-      font-weight: bold;
-      color: #495057;
-      border: 1px dashed #ccc;
-    }
+            label {
+                font-weight: bold;
+                margin-bottom: 4px;
+                font-size: 0.8em;
+                color: #444;
+            }
+            input,
+            select {
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 0.95em;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .readonly-input {
+                background-color: #e9ecef;
+                font-weight: bold;
+                color: #495057;
+                border: 1px dashed #ccc;
+            }
 
-    .result-group {
-      background: #eef1f5;
-      padding: 10px;
-      border-radius: 5px;
-      font-size: 0.9em;
-      color: #0056b3;
-      margin-top: 10px;
-      line-height: 1.5;
-      border-left: 4px solid #0056b3;
-    }
-    .result-group.bank {
-      border-left-color: #17a2b8;
-      color: #117a8b;
-      background: #e0f3f5;
-    }
+            .result-group {
+                background: #eef1f5;
+                padding: 10px;
+                border-radius: 5px;
+                font-size: 0.9em;
+                color: #0056b3;
+                margin-top: 10px;
+                line-height: 1.5;
+                border-left: 4px solid #0056b3;
+            }
+            .result-group.bank {
+                border-left-color: #17a2b8;
+                color: #117a8b;
+                background: #e0f3f5;
+            }
 
-    .btn-add {
-      background-color: #6c757d;
-      color: white;
-      border: none;
-      padding: 8px 12px;
-      font-size: 0.9em;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 15px;
-      transition: 0.2s;
-    }
-    .btn-add:hover {
-      background-color: #5a6268;
-    }
-    .btn-remove {
-      background-color: #dc3545;
-      color: white;
-      border: none;
-      padding: 4px 8px;
-      font-size: 0.8em;
-      border-radius: 4px;
-      cursor: pointer;
-      float: right;
-    }
+            .btn-add {
+                background-color: #6c757d;
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                font-size: 0.9em;
+                border-radius: 4px;
+                cursor: pointer;
+                margin-bottom: 15px;
+                transition: 0.2s;
+            }
+            .btn-add:hover {
+                background-color: #5a6268;
+            }
+            .btn-remove {
+                background-color: #dc3545;
+                color: white;
+                border: none;
+                padding: 4px 8px;
+                font-size: 0.8em;
+                border-radius: 4px;
+                cursor: pointer;
+                float: right;
+            }
 
-    .summary-box {
-      background: #f8f9fa;
-      border: 1px solid #ddd;
-      padding: 15px;
-      border-radius: 6px;
-      margin-top: 20px;
-      font-size: 1.1em;
-    }
-    .summary-box div {
-      margin-bottom: 5px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .summary-box strong {
-      color: #222;
-    }
+            .summary-box {
+                background: #f8f9fa;
+                border: 1px solid #ddd;
+                padding: 15px;
+                border-radius: 6px;
+                margin-top: 20px;
+                font-size: 1.1em;
+            }
+            .summary-box div {
+                margin-bottom: 5px;
+                display: flex;
+                justify-content: space-between;
+            }
+            .summary-box strong {
+                color: #222;
+            }
 
-    .chart-container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      margin-bottom: 40px;
-    }
-    .error {
-      color: #dc3545;
-      font-size: 0.8em;
-      margin-top: 3px;
-    }
-  </style>
-</head>
-<body>
-<div class="header">
-  <h1>Advanced Mortgage Scenarios</h1>
-  <p>
-    Compare costs, grace periods, and remaining debt side-by-side.
-  </p>
-</div>
-
-<div class="scenarios-wrapper">
-  <div class="scenario-col" id="scenario-A">
-    <h2 style="color: #0056b3">Scenario A</h2>
-
-    <div class="loan-section">
-      <h3>1. Property & Equity</h3>
-      <div class="row">
-        <div class="form-group">
-          <label>Price (€)</label>
-          <input
-            type="number"
-            id="A-price"
-            value="400000"
-            step="1000"
-            oninput="calculateAll()"
-          />
+            .chart-container {
+                background: #fff;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                margin-bottom: 40px;
+            }
+            .error {
+                color: #dc3545;
+                font-size: 0.8em;
+                margin-top: 3px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>Advanced Mortgage Scenarios</h1>
+            <p>
+                Compare costs, grace periods, and remaining debt side-by-side.
+            </p>
         </div>
-        <div class="form-group">
-          <label>Nebenkosten (%)</label>
-          <input
-            type="number"
-            id="A-neben"
-            value="10"
-            step="0.5"
-            oninput="calculateAll()"
-          />
+
+        <div class="scenarios-wrapper">
+            <div class="scenario-col" id="scenario-A">
+                <h2 style="color: #0056b3">Scenario A</h2>
+
+                <div class="loan-section">
+                    <h3>1. Property & Equity</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Price (€)</label>
+                            <input
+                                type="number"
+                                id="A-price"
+                                value="400000"
+                                step="1000"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Nebenkosten (%)</label>
+                            <input
+                                type="number"
+                                id="A-neben"
+                                value="10"
+                                step="0.5"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Eigenkapital (€)</label>
+                            <input
+                                type="number"
+                                id="A-equity"
+                                value="80000"
+                                step="1000"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        id="A-total-need"
+                        style="font-size: 0.9em; font-weight: bold; color: #555"
+                    >
+                        Required: €0
+                    </div>
+                </div>
+
+                <div id="A-kfw-container"></div>
+                <button class="btn-add" onclick="addKfwPlan('A')">
+                    + Add KfW Loan
+                </button>
+
+                <div class="loan-section">
+                    <h3>3. Bausparvertrag</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Available Funds (€)</label>
+                            <input
+                                type="number"
+                                id="A-bauspar"
+                                value="0"
+                                step="1000"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Interest Rate (%)</label>
+                            <input
+                                type="number"
+                                id="A-bauspar-rate"
+                                value="1.0"
+                                step="0.1"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="loan-section">
+                    <h3>4. Bank Loan</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Remaining (€)</label>
+                            <input
+                                type="number"
+                                id="A-bank-amount"
+                                value="0"
+                                class="readonly-input"
+                                readonly
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Rate (%)</label>
+                            <input
+                                type="number"
+                                id="A-bank-rate"
+                                value="3.8"
+                                step="0.1"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Zinsbindung (Yrs)</label>
+                            <select id="A-bank-fixed" onchange="calculateAll()">
+                                <option value="10">10 Years</option>
+                                <option value="15" selected>15 Years</option>
+                                <option value="20">20 Years</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Duration (Yrs)</label>
+                            <input
+                                type="number"
+                                id="A-bank-target"
+                                value="30"
+                                step="1"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Sondertilgung (%)</label>
+                            <input
+                                type="number"
+                                id="A-bank-sonder"
+                                value="0"
+                                max="5"
+                                step="1"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                    </div>
+                    <div class="result-group bank" id="A-bank-result"></div>
+                </div>
+
+                <div class="summary-box">
+                    <div>
+                        <span>Total Initial Payment:</span>
+                        <strong id="A-sum-pmt">€0.00</strong>
+                    </div>
+                    <div>
+                        <span>Total Restschuld:</span>
+                        <strong id="A-sum-rest">€0.00</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario-col" id="scenario-B">
+                <h2 style="color: #28a745">Scenario B</h2>
+
+                <div class="loan-section">
+                    <h3>1. Property & Equity</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Price (€)</label>
+                            <input
+                                type="number"
+                                id="B-price"
+                                value="400000"
+                                step="1000"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Nebenkosten (%)</label>
+                            <input
+                                type="number"
+                                id="B-neben"
+                                value="10"
+                                step="0.5"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Eigenkapital (€)</label>
+                            <input
+                                type="number"
+                                id="B-equity"
+                                value="80000"
+                                step="1000"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                    </div>
+                    <div
+                        id="B-total-need"
+                        style="font-size: 0.9em; font-weight: bold; color: #555"
+                    >
+                        Required: €0
+                    </div>
+                </div>
+
+                <div id="B-kfw-container"></div>
+                <button class="btn-add" onclick="addKfwPlan('B')">
+                    + Add KfW Loan
+                </button>
+
+                <div class="loan-section">
+                    <h3>3. Bausparvertrag</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Available Funds (€)</label>
+                            <input
+                                type="number"
+                                id="B-bauspar"
+                                value="0"
+                                step="1000"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Interest Rate (%)</label>
+                            <input
+                                type="number"
+                                id="B-bauspar-rate"
+                                value="1.0"
+                                step="0.1"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="loan-section">
+                    <h3>4. Bank Loan</h3>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Remaining (€)</label>
+                            <input
+                                type="number"
+                                id="B-bank-amount"
+                                value="0"
+                                class="readonly-input"
+                                readonly
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Rate (%)</label>
+                            <input
+                                type="number"
+                                id="B-bank-rate"
+                                value="3.5"
+                                step="0.1"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Zinsbindung (Yrs)</label>
+                            <select id="B-bank-fixed" onchange="calculateAll()">
+                                <option value="10" selected>10 Years</option>
+                                <option value="15">15 Years</option>
+                                <option value="20">20 Years</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Duration (Yrs)</label>
+                            <input
+                                type="number"
+                                id="B-bank-target"
+                                value="25"
+                                step="1"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                        <div class="form-group">
+                            <label>Sondertilgung (%)</label>
+                            <input
+                                type="number"
+                                id="B-bank-sonder"
+                                value="2"
+                                max="5"
+                                step="1"
+                                oninput="calculateAll()"
+                            />
+                        </div>
+                    </div>
+                    <div class="result-group bank" id="B-bank-result"></div>
+                </div>
+
+                <div class="summary-box">
+                    <div>
+                        <span>Total Initial Payment:</span>
+                        <strong id="B-sum-pmt">€0.00</strong>
+                    </div>
+                    <div>
+                        <span>Total Restschuld:</span>
+                        <strong id="B-sum-rest">€0.00</strong>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-          <label>Eigenkapital (€)</label>
-          <input
-            type="number"
-            id="A-equity"
-            value="80000"
-            step="1000"
-            oninput="calculateAll()"
-          />
+
+        <div class="chart-container">
+            <h2 style="text-align: center">Monthly Payment Trajectory</h2>
+            <p style="text-align: center; font-size: 0.9em; color: #666">
+                Shows exactly how your monthly cash flow changes as grace
+                periods end or loans are paid off.
+            </p>
+
+            <div style="position: relative; height: 400px; width: 100%">
+                <canvas id="paymentChart"></canvas>
+            </div>
         </div>
-      </div>
-      <div
-        id="A-total-need"
-        style="font-size: 0.9em; font-weight: bold; color: #555"
-      >
-        Required: €0
-      </div>
-    </div>
 
-    <div id="A-kfw-container"></div>
-    <button class="btn-add" onclick="addKfwPlan('A')">
-      + Add KfW Loan
-    </button>
+        <script>
+            let kfwCount = 0;
+            let activeKfwIds = { A: [], B: [] };
+            let myChart = null;
 
-    <div class="loan-section">
-      <h3>3. Bausparvertrag</h3>
-      <div class="row">
-        <div class="form-group">
-          <label>Available Funds (€)</label>
-          <input
-            type="number"
-            id="A-bauspar"
-            value="0"
-            step="1000"
-            oninput="calculateAll()"
-          />
-        </div>
-        <div class="form-group">
-          <label>Interest Rate (%)</label>
-          <input
-            type="number"
-            id="A-bauspar-rate"
-            value="1.0"
-            step="0.1"
-            oninput="calculateAll()"
-          />
-        </div>
-      </div>
-    </div>
+            // Comprehensive German KfW programs with descriptions, max amounts, and 2026 starting interest rates
+            const kfwPrograms = [
+                {
+                    id: "124",
+                    name: "KfW 124 (Wohneigentum)",
+                    max: 100000,
+                    rate: 3.63,
+                    desc: "For the purchase or construction of an owner-occupied home. General basic funding.",
+                },
+                {
+                    id: "134",
+                    name: "KfW 134 (Genossenschaftliches Wohnen)",
+                    max: 150000,
+                    rate: 0.01,
+                    desc: "For the purchase of cooperative shares for a self-occupied cooperative apartment.",
+                },
+                {
+                    id: "159",
+                    name: "KfW 159 (Altersgerecht Umbauen)",
+                    max: 50000,
+                    rate: 2.27,
+                    desc: "For age-appropriate, barrier-free conversions and burglary protection.",
+                },
+                {
+                    id: "261",
+                    name: "KfW 261 (Effizienzhaus)",
+                    max: 150000,
+                    rate: 2.39,
+                    desc: "For energy-efficient renovation or purchasing a newly renovated efficient home. Often includes a repayment subsidy.",
+                },
+                {
+                    id: "270",
+                    name: "KfW 270 (Erneuerbare Energien)",
+                    max: 50000000,
+                    rate: 3.48,
+                    desc: "Standard loan for the expansion and acquisition of renewable energy systems (e.g., Photovoltaics).",
+                },
+                {
+                    id: "296",
+                    name: "KfW 296 (Klimafreundlich Niedrigpreis)",
+                    max: 100000,
+                    rate: 0.01,
+                    desc: "For building or buying new climate-friendly real estate in the low-price segment (Effizienzhaus 55).",
+                },
+                {
+                    id: "297",
+                    name: "KfW 297/298 (Klimafreundlicher Neubau)",
+                    max: 150000,
+                    rate: 1.37,
+                    desc: "For building or buying a new climate-friendly home (Effizienzhaus 40). Max amount is €100k, or up to €150k with a QNG sustainability certificate.",
+                },
+                {
+                    id: "300",
+                    name: "KfW 300 (Familien Neubau)",
+                    max: 270000,
+                    rate: 0.01,
+                    desc: "Subsidized loans for families with children meeting specific income limits to build or buy new climate-friendly homes.",
+                },
+                {
+                    id: "308",
+                    name: "KfW 308 (Jung kauft Alt)",
+                    max: 150000,
+                    rate: 0.01,
+                    desc: "For families buying an existing older, unrenovated property (Energy Class F, G, or H) and committing to energy-efficient renovations.",
+                },
+                {
+                    id: "358",
+                    name: "KfW 358/359 (Ergänzungskredit)",
+                    max: 120000,
+                    rate: 0.01,
+                    desc: "Supplementary loan for individual energy-efficient renovation measures that have already been approved for a grant.",
+                },
+            ];
 
-    <div class="loan-section">
-      <h3>4. Bank Loan</h3>
-      <div class="row">
-        <div class="form-group">
-          <label>Remaining (€)</label>
-          <input
-            type="number"
-            id="A-bank-amount"
-            value="0"
-            class="readonly-input"
-            readonly
-          />
-        </div>
-        <div class="form-group">
-          <label>Rate (%)</label>
-          <input
-            type="number"
-            id="A-bank-rate"
-            value="3.8"
-            step="0.1"
-            oninput="calculateAll()"
-          />
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group">
-          <label>Zinsbindung (Yrs)</label>
-          <select id="A-bank-fixed" onchange="calculateAll()">
-            <option value="10">10 Years</option>
-            <option value="15" selected>15 Years</option>
-            <option value="20">20 Years</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Duration (Yrs)</label>
-          <input
-            type="number"
-            id="A-bank-target"
-            value="30"
-            step="1"
-            oninput="calculateAll()"
-          />
-        </div>
-        <div class="form-group">
-          <label>Sondertilgung (%)</label>
-          <input
-            type="number"
-            id="A-bank-sonder"
-            value="0"
-            max="5"
-            step="1"
-            oninput="calculateAll()"
-          />
-        </div>
-      </div>
-      <div class="result-group bank" id="A-bank-result"></div>
-    </div>
+            function updateKfwOptions(scen) {
+                let selected = activeKfwIds[scen]
+                    .map((id) => {
+                        let el = document.getElementById(`${id}-type`);
+                        return el ? el.value : null;
+                    })
+                    .filter((v) => v);
 
-    <div class="summary-box">
-      <div>
-        <span>Total Initial Payment:</span>
-        <strong id="A-sum-pmt">€0.00</strong>
-      </div>
-      <div>
-        <span>Total Restschuld:</span>
-        <strong id="A-sum-rest">€0.00</strong>
-      </div>
-    </div>
-  </div>
+                activeKfwIds[scen].forEach((id) => {
+                    let selectEl = document.getElementById(`${id}-type`);
+                    if (!selectEl) return;
+                    Array.from(selectEl.options).forEach((opt) => {
+                        opt.disabled =
+                            opt.value !== selectEl.value &&
+                            selected.includes(opt.value);
+                    });
+                });
+            }
 
-  <div class="scenario-col" id="scenario-B">
-    <h2 style="color: #28a745">Scenario B</h2>
+            // Updated function to handle dynamic text AND automatic interest rate injection
+            function updateKfwDesc(id, autoUpdateRate = true) {
+                let selectEl = document.getElementById(`${id}-type`);
+                let descEl = document.getElementById(`${id}-desc`);
+                let rateEl = document.getElementById(`${id}-rate`);
+                if (!selectEl || !descEl) return;
 
-    <div class="loan-section">
-      <h3>1. Property & Equity</h3>
-      <div class="row">
-        <div class="form-group">
-          <label>Price (€)</label>
-          <input
-            type="number"
-            id="B-price"
-            value="400000"
-            step="1000"
-            oninput="calculateAll()"
-          />
-        </div>
-        <div class="form-group">
-          <label>Nebenkosten (%)</label>
-          <input
-            type="number"
-            id="B-neben"
-            value="10"
-            step="0.5"
-            oninput="calculateAll()"
-          />
-        </div>
-        <div class="form-group">
-          <label>Eigenkapital (€)</label>
-          <input
-            type="number"
-            id="B-equity"
-            value="80000"
-            step="1000"
-            oninput="calculateAll()"
-          />
-        </div>
-      </div>
-      <div
-        id="B-total-need"
-        style="font-size: 0.9em; font-weight: bold; color: #555"
-      >
-        Required: €0
-      </div>
-    </div>
+                let selectedProgram = kfwPrograms.find(
+                    (p) => p.id === selectEl.value,
+                );
+                if (selectedProgram) {
+                    // Update the description box
+                    let maxDisplay =
+                        selectedProgram.max > 1000000
+                            ? "Unlimited"
+                            : `€${selectedProgram.max.toLocaleString()}`;
+                    descEl.innerHTML = `<span style="color:#555;">${selectedProgram.desc}</span><br><strong style="color:#0056b3;">Max Loan Amount: ${maxDisplay} | Starting Rate: ${selectedProgram.rate}%</strong>`;
 
-    <div id="B-kfw-container"></div>
-    <button class="btn-add" onclick="addKfwPlan('B')">
-      + Add KfW Loan
-    </button>
+                    // Automatically update the rate input field to the program's starting rate
+                    if (rateEl && autoUpdateRate) {
+                        rateEl.value = selectedProgram.rate;
+                    }
+                }
+            }
 
-    <div class="loan-section">
-      <h3>3. Bausparvertrag</h3>
-      <div class="row">
-        <div class="form-group">
-          <label>Available Funds (€)</label>
-          <input
-            type="number"
-            id="B-bauspar"
-            value="0"
-            step="1000"
-            oninput="calculateAll()"
-          />
-        </div>
-        <div class="form-group">
-          <label>Interest Rate (%)</label>
-          <input
-            type="number"
-            id="B-bauspar-rate"
-            value="1.0"
-            step="0.1"
-            oninput="calculateAll()"
-          />
-        </div>
-      </div>
-    </div>
+            function addKfwPlan(scen) {
+                if (activeKfwIds[scen].length >= kfwPrograms.length) {
+                    alert(
+                        "All available KfW programs have been added to this scenario.",
+                    );
+                    return;
+                }
 
-    <div class="loan-section">
-      <h3>4. Bank Loan</h3>
-      <div class="row">
-        <div class="form-group">
-          <label>Remaining (€)</label>
-          <input
-            type="number"
-            id="B-bank-amount"
-            value="0"
-            class="readonly-input"
-            readonly
-          />
-        </div>
-        <div class="form-group">
-          <label>Rate (%)</label>
-          <input
-            type="number"
-            id="B-bank-rate"
-            value="3.5"
-            step="0.1"
-            oninput="calculateAll()"
-          />
-        </div>
-      </div>
-      <div class="row">
-        <div class="form-group">
-          <label>Zinsbindung (Yrs)</label>
-          <select id="B-bank-fixed" onchange="calculateAll()">
-            <option value="10" selected>10 Years</option>
-            <option value="15">15 Years</option>
-            <option value="20">20 Years</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Duration (Yrs)</label>
-          <input
-            type="number"
-            id="B-bank-target"
-            value="25"
-            step="1"
-            oninput="calculateAll()"
-          />
-        </div>
-        <div class="form-group">
-          <label>Sondertilgung (%)</label>
-          <input
-            type="number"
-            id="B-bank-sonder"
-            value="2"
-            max="5"
-            step="1"
-            oninput="calculateAll()"
-          />
-        </div>
-      </div>
-      <div class="result-group bank" id="B-bank-result"></div>
-    </div>
+                const id = `${scen}-kfw-${kfwCount++}`;
+                activeKfwIds[scen].push(id);
 
-    <div class="summary-box">
-      <div>
-        <span>Total Initial Payment:</span>
-        <strong id="B-sum-pmt">€0.00</strong>
-      </div>
-      <div>
-        <span>Total Restschuld:</span>
-        <strong id="B-sum-rest">€0.00</strong>
-      </div>
-    </div>
-  </div>
-</div>
+                let optionsHtml = kfwPrograms
+                    .map((p) => `<option value="${p.id}">${p.name}</option>`)
+                    .join("");
 
-<div class="chart-container">
-  <h2 style="text-align: center">Monthly Payment Trajectory</h2>
-  <p style="text-align: center; font-size: 0.9em; color: #666">
-    Shows exactly how your monthly cash flow changes as grace
-    periods end or loans are paid off.
-  </p>
-
-  <div style="position: relative; height: 400px; width: 100%">
-    <canvas id="paymentChart"></canvas>
-  </div>
-</div>
-
-<script>
-  let kfwCount = 0;
-  let activeKfwIds = { A: [], B: [] };
-  let myChart = null;
-
-  // Current German KfW programs with descriptions and max amounts
-  const kfwPrograms = [
-    {
-      id: "124",
-      name: "KfW 124 (Wohneigentum)",
-      max: 100000,
-      desc: "For the purchase or construction of an owner-occupied home.",
-    },
-    {
-      id: "261",
-      name: "KfW 261 (Effizienzhaus)",
-      max: 150000,
-      desc: "For energy-efficient renovation or purchasing a newly renovated efficient home. Often includes a repayment subsidy.",
-    },
-    {
-      id: "297",
-      name: "KfW 297/298 (Klimafreundlich)",
-      max: 150000,
-      desc: "For building or buying a new climate-friendly home. Max amount is €100k, or up to €150k with a QNG sustainability certificate.",
-    },
-    {
-      id: "300",
-      name: "KfW 300 (Familien Neubau)",
-      max: 270000,
-      desc: "Subsidized loans for families with children meeting specific income limits to build or buy new climate-friendly homes.",
-    },
-    {
-      id: "308",
-      name: "KfW 308 (Jung kauft Alt)",
-      max: 150000,
-      desc: "For families buying an existing older, unrenovated property (Energy Class F, G, or H) and committing to energy-efficient renovations.",
-    },
-  ];
-
-  function updateKfwOptions(scen) {
-    let selected = activeKfwIds[scen]
-      .map((id) => {
-        let el = document.getElementById(`${id}-type`);
-        return el ? el.value : null;
-      })
-      .filter((v) => v);
-
-    activeKfwIds[scen].forEach((id) => {
-      let selectEl = document.getElementById(`${id}-type`);
-      if (!selectEl) return;
-      Array.from(selectEl.options).forEach((opt) => {
-        opt.disabled =
-          opt.value !== selectEl.value &&
-          selected.includes(opt.value);
-      });
-    });
-  }
-
-  // New function to update the description text dynamically
-  function updateKfwDesc(id) {
-    let selectEl = document.getElementById(`${id}-type`);
-    let descEl = document.getElementById(`${id}-desc`);
-    if (!selectEl || !descEl) return;
-
-    let selectedProgram = kfwPrograms.find(
-      (p) => p.id === selectEl.value,
-    );
-    if (selectedProgram) {
-      descEl.innerHTML = `<span style="color:#555;">${selectedProgram.desc}</span><br><strong style="color:#0056b3;">Max Loan Amount: €${selectedProgram.max.toLocaleString()}</strong>`;
-    }
-  }
-
-  function addKfwPlan(scen) {
-    if (activeKfwIds[scen].length >= kfwPrograms.length) {
-      alert(
-        "All available KfW programs have been added to this scenario.",
-      );
-      return;
-    }
-
-    const id = `${scen}-kfw-${kfwCount++}`;
-    activeKfwIds[scen].push(id);
-
-    let optionsHtml = kfwPrograms
-      .map((p) => `<option value="${p.id}">${p.name}</option>`)
-      .join("");
-
-    const html = `
+                const html = `
                     <div class="loan-section" id="${id}-wrapper">
                         <h3 style="margin-top:0; display:flex; justify-content:space-between; align-items:center;">
                             <select id="${id}-type" style="width:75%; font-weight:bold; font-size:1em; padding: 4px; border-radius: 4px;" onchange="updateKfwDesc('${id}'); updateKfwOptions('${scen}'); calculateAll();">
@@ -614,221 +665,221 @@
                         <div class="result-group" id="${id}-result"></div>
                     </div>
                     `;
-    document
-      .getElementById(`${scen}-kfw-container`)
-      .insertAdjacentHTML("beforeend", html);
+                document
+                    .getElementById(`${scen}-kfw-container`)
+                    .insertAdjacentHTML("beforeend", html);
 
-    let selectEl = document.getElementById(`${id}-type`);
-    let selectedInScen = activeKfwIds[scen]
-      .filter((kId) => kId !== id)
-      .map(
-        (kId) => document.getElementById(`${kId}-type`)?.value,
-      );
+                let selectEl = document.getElementById(`${id}-type`);
+                let selectedInScen = activeKfwIds[scen]
+                    .filter((kId) => kId !== id)
+                    .map(
+                        (kId) => document.getElementById(`${kId}-type`)?.value,
+                    );
 
-    for (let opt of selectEl.options) {
-      if (!selectedInScen.includes(opt.value)) {
-        selectEl.value = opt.value;
-        break;
-      }
-    }
+                for (let opt of selectEl.options) {
+                    if (!selectedInScen.includes(opt.value)) {
+                        selectEl.value = opt.value;
+                        break;
+                    }
+                }
 
-    updateKfwOptions(scen);
-    updateKfwDesc(id); // Initialize the description box immediately
-    calculateAll();
-  }
+                updateKfwOptions(scen);
+                updateKfwDesc(id); // Initialize the description box immediately
+                calculateAll();
+            }
 
-  function removeKfwPlan(scen, id) {
-    document.getElementById(`${id}-wrapper`).remove();
-    activeKfwIds[scen] = activeKfwIds[scen].filter(
-      (kfwId) => kfwId !== id,
-    );
-    updateKfwOptions(scen);
-    calculateAll();
-  }
+            function removeKfwPlan(scen, id) {
+                document.getElementById(`${id}-wrapper`).remove();
+                activeKfwIds[scen] = activeKfwIds[scen].filter(
+                    (kfwId) => kfwId !== id,
+                );
+                updateKfwOptions(scen);
+                calculateAll();
+            }
 
-  function mergeArrays(arr1, arr2) {
-    let len = Math.max(arr1.length, arr2.length);
-    let res = new Array(len).fill(0);
-    for (let i = 0; i < len; i++)
-      res[i] = (arr1[i] || 0) + (arr2[i] || 0);
-    return res;
-  }
+            function mergeArrays(arr1, arr2) {
+                let len = Math.max(arr1.length, arr2.length);
+                let res = new Array(len).fill(0);
+                for (let i = 0; i < len; i++)
+                    res[i] = (arr1[i] || 0) + (arr2[i] || 0);
+                return res;
+            }
 
-  function processScenario(scen) {
-    let price =
-      parseFloat(
-        document.getElementById(`${scen}-price`).value,
-      ) || 0;
-    let neben =
-      parseFloat(
-        document.getElementById(`${scen}-neben`).value,
-      ) || 0;
-    let equity =
-      parseFloat(
-        document.getElementById(`${scen}-equity`).value,
-      ) || 0;
+            function processScenario(scen) {
+                let price =
+                    parseFloat(
+                        document.getElementById(`${scen}-price`).value,
+                    ) || 0;
+                let neben =
+                    parseFloat(
+                        document.getElementById(`${scen}-neben`).value,
+                    ) || 0;
+                let equity =
+                    parseFloat(
+                        document.getElementById(`${scen}-equity`).value,
+                    ) || 0;
 
-    let totalNeed = price * (1 + neben / 100) - equity;
-    document.getElementById(`${scen}-total-need`).innerText =
-      `Capital Required: €${totalNeed.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+                let totalNeed = price * (1 + neben / 100) - equity;
+                document.getElementById(`${scen}-total-need`).innerText =
+                    `Capital Required: €${totalNeed.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 
-    let kfw_sum = 0;
-    let kfw_payments = [];
-    let total_restschuld = 0;
+                let kfw_sum = 0;
+                let kfw_payments = [];
+                let total_restschuld = 0;
 
-    activeKfwIds[scen].forEach((id) => {
-      let p =
-        parseFloat(
-          document.getElementById(`${id}-amount`).value,
-        ) || 0;
-      let r =
-        parseFloat(
-          document.getElementById(`${id}-rate`).value,
-        ) || 0;
-      let t =
-        parseFloat(
-          document.getElementById(`${id}-target`).value,
-        ) || 0;
-      let g =
-        parseFloat(
-          document.getElementById(`${id}-grace`).value,
-        ) || 0;
-      let f =
-        parseFloat(
-          document.getElementById(`${id}-fixed`).value,
-        ) || 0;
+                activeKfwIds[scen].forEach((id) => {
+                    let p =
+                        parseFloat(
+                            document.getElementById(`${id}-amount`).value,
+                        ) || 0;
+                    let r =
+                        parseFloat(
+                            document.getElementById(`${id}-rate`).value,
+                        ) || 0;
+                    let t =
+                        parseFloat(
+                            document.getElementById(`${id}-target`).value,
+                        ) || 0;
+                    let g =
+                        parseFloat(
+                            document.getElementById(`${id}-grace`).value,
+                        ) || 0;
+                    let f =
+                        parseFloat(
+                            document.getElementById(`${id}-fixed`).value,
+                        ) || 0;
 
-      let res = computeLoanAmortization(p, r, t, g, f, 0);
-      kfw_sum += p;
-      total_restschuld += res.restschuld;
+                    let res = computeLoanAmortization(p, r, t, g, f, 0);
+                    kfw_sum += p;
+                    total_restschuld += res.restschuld;
 
-      document.getElementById(`${id}-error`).innerText =
-        res.error;
-      let output = `<div><strong>Payment:</strong> €${res.phase2_pmt.toFixed(2)} ${g > 0 ? ` <span style="font-size:0.85em; color:#666;">(€${res.phase1_pmt.toFixed(2)} in Grace)</span>` : ""}</div>`;
-      output += `<div><strong>Restschuld (Yr ${f}):</strong> €${res.restschuld.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>`;
-      document.getElementById(`${id}-result`).innerHTML = output;
+                    document.getElementById(`${id}-error`).innerText =
+                        res.error;
+                    let output = `<div><strong>Payment:</strong> €${res.phase2_pmt.toFixed(2)} ${g > 0 ? ` <span style="font-size:0.85em; color:#666;">(€${res.phase1_pmt.toFixed(2)} in Grace)</span>` : ""}</div>`;
+                    output += `<div><strong>Restschuld (Yr ${f}):</strong> €${res.restschuld.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>`;
+                    document.getElementById(`${id}-result`).innerHTML = output;
 
-      kfw_payments = mergeArrays(kfw_payments, res.payments);
-    });
+                    kfw_payments = mergeArrays(kfw_payments, res.payments);
+                });
 
-    let bauspar =
-      parseFloat(
-        document.getElementById(`${scen}-bauspar`).value,
-      ) || 0;
-    let bankAmount = totalNeed - kfw_sum - bauspar;
-    if (bankAmount < 0) bankAmount = 0;
-    document.getElementById(`${scen}-bank-amount`).value =
-      bankAmount.toFixed(0);
+                let bauspar =
+                    parseFloat(
+                        document.getElementById(`${scen}-bauspar`).value,
+                    ) || 0;
+                let bankAmount = totalNeed - kfw_sum - bauspar;
+                if (bankAmount < 0) bankAmount = 0;
+                document.getElementById(`${scen}-bank-amount`).value =
+                    bankAmount.toFixed(0);
 
-    let b_r =
-      parseFloat(
-        document.getElementById(`${scen}-bank-rate`).value,
-      ) || 0;
-    let b_t =
-      parseFloat(
-        document.getElementById(`${scen}-bank-target`).value,
-      ) || 0;
-    let b_f =
-      parseFloat(
-        document.getElementById(`${scen}-bank-fixed`).value,
-      ) || 0;
-    let b_s =
-      parseFloat(
-        document.getElementById(`${scen}-bank-sonder`).value,
-      ) || 0;
+                let b_r =
+                    parseFloat(
+                        document.getElementById(`${scen}-bank-rate`).value,
+                    ) || 0;
+                let b_t =
+                    parseFloat(
+                        document.getElementById(`${scen}-bank-target`).value,
+                    ) || 0;
+                let b_f =
+                    parseFloat(
+                        document.getElementById(`${scen}-bank-fixed`).value,
+                    ) || 0;
+                let b_s =
+                    parseFloat(
+                        document.getElementById(`${scen}-bank-sonder`).value,
+                    ) || 0;
 
-    let b_res = computeLoanAmortization(
-      bankAmount,
-      b_r,
-      b_t,
-      0,
-      b_f,
-      b_s,
-    );
-    total_restschuld += b_res.restschuld;
+                let b_res = computeLoanAmortization(
+                    bankAmount,
+                    b_r,
+                    b_t,
+                    0,
+                    b_f,
+                    b_s,
+                );
+                total_restschuld += b_res.restschuld;
 
-    document.getElementById(`${scen}-bank-result`).innerHTML = `
+                document.getElementById(`${scen}-bank-result`).innerHTML = `
             <div><strong>Regular Payment:</strong> €${b_res.phase2_pmt.toFixed(2)}</div>
             <div><strong>Restschuld (Yr ${b_f}):</strong> €${b_res.restschuld.toLocaleString(undefined, { maximumFractionDigits: 0 })}</div>
         `;
 
-    let total_payments = mergeArrays(kfw_payments, b_res.payments);
+                let total_payments = mergeArrays(kfw_payments, b_res.payments);
 
-    document.getElementById(`${scen}-sum-pmt`).innerText =
-      `€${(total_payments[0] || 0).toFixed(2)}`;
-    document.getElementById(`${scen}-sum-rest`).innerText =
-      `€${total_restschuld.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+                document.getElementById(`${scen}-sum-pmt`).innerText =
+                    `€${(total_payments[0] || 0).toFixed(2)}`;
+                document.getElementById(`${scen}-sum-rest`).innerText =
+                    `€${total_restschuld.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
 
-    return total_payments;
-  }
+                return total_payments;
+            }
 
-  function updateChart(dataA, dataB) {
-    let max_len = Math.max(dataA.length, dataB.length);
-    let years = Math.ceil(max_len / 12);
-    if (years === 0) years = 1;
+            function updateChart(dataA, dataB) {
+                let max_len = Math.max(dataA.length, dataB.length);
+                let years = Math.ceil(max_len / 12);
+                if (years === 0) years = 1;
 
-    let labels = [];
-    let setA = [];
-    let setB = [];
+                let labels = [];
+                let setA = [];
+                let setB = [];
 
-    for (let y = 1; y <= years; y++) {
-      labels.push(`Year ${y}`);
-      // Sample the 6th month to represent the steady annual payment state
-      let idx = y * 12 - 6;
-      setA.push(dataA[idx] !== undefined ? dataA[idx] : 0);
-      setB.push(dataB[idx] !== undefined ? dataB[idx] : 0);
-    }
+                for (let y = 1; y <= years; y++) {
+                    labels.push(`Year ${y}`);
+                    // Sample the 6th month to represent the steady annual payment state
+                    let idx = y * 12 - 6;
+                    setA.push(dataA[idx] !== undefined ? dataA[idx] : 0);
+                    setB.push(dataB[idx] !== undefined ? dataB[idx] : 0);
+                }
 
-    if (myChart) myChart.destroy();
-    const ctx = document
-      .getElementById("paymentChart")
-      .getContext("2d");
-    myChart = new Chart(ctx, {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: "Scenario A (€)",
-            data: setA,
-            borderColor: "#0056b3",
-            backgroundColor: "rgba(0,86,179,0.1)",
-            fill: true,
-            stepped: true,
-            tension: 0,
-          },
-          {
-            label: "Scenario B (€)",
-            data: setB,
-            borderColor: "#28a745",
-            backgroundColor: "rgba(40,167,69,0.1)",
-            fill: true,
-            stepped: true,
-            tension: 0,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: { y: { beginAtZero: true } },
-      },
-    });
-  }
+                if (myChart) myChart.destroy();
+                const ctx = document
+                    .getElementById("paymentChart")
+                    .getContext("2d");
+                myChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: "Scenario A (€)",
+                                data: setA,
+                                borderColor: "#0056b3",
+                                backgroundColor: "rgba(0,86,179,0.1)",
+                                fill: true,
+                                stepped: true,
+                                tension: 0,
+                            },
+                            {
+                                label: "Scenario B (€)",
+                                data: setB,
+                                borderColor: "#28a745",
+                                backgroundColor: "rgba(40,167,69,0.1)",
+                                fill: true,
+                                stepped: true,
+                                tension: 0,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true } },
+                    },
+                });
+            }
 
-  function calculateAll() {
-    let arrA = processScenario("A");
-    let arrB = processScenario("B");
-    updateChart(arrA, arrB);
-  }
+            function calculateAll() {
+                let arrA = processScenario("A");
+                let arrB = processScenario("B");
+                updateChart(arrA, arrB);
+            }
 
-  window.onload = function () {
-    addKfwPlan("A");
-    // Pre-fill B to show a difference (e.g., adding a Bauspar or changing bank Zinsbindung)
-    setTimeout(() => {
-      calculateAll();
-    }, 100);
-  };
-</script>
-</body>
+            window.onload = function () {
+                addKfwPlan("A");
+                // Pre-fill B to show a difference (e.g., adding a Bauspar or changing bank Zinsbindung)
+                setTimeout(() => {
+                    calculateAll();
+                }, 100);
+            };
+        </script>
+    </body>
 </html>
